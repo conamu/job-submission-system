@@ -1,0 +1,5 @@
+server:
+  workers: 10
+
+client:
+  instances: 10
