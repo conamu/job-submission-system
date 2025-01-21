@@ -2,4 +2,5 @@ server:
   workers: 10
 
 client:
-  instances: 10
+  instances: 3
+  newRequestThreshold: 100ms
