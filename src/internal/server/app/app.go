@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
+	"github.com/conamu/job-submission-system/src/internal/server/pkg/handler"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/job"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/worker"
 	"github.com/spf13/viper"
@@ -20,28 +21,30 @@ import (
 type Application interface {
 	Run()
 }
-
-type Config struct {
-}
 type application struct {
 	ctx   context.Context
 	log   *slog.Logger
 	wg    *sync.WaitGroup
 	pool  worker.Pool
-	queue job.Queue
+	queue *job.Queue
 }
 
-func Create(c *Config) Application {
+func Create() Application {
+	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+
 	l := logger.New(slog.LevelDebug, "JobServer")
-	ctx := context.Background()
 	ctx = context.WithValue(ctx, constant.CTX_LOGGER, l)
-	pool := worker.CreatePool(ctx, viper.GetInt("server.workers"))
+	wg := &sync.WaitGroup{}
+	ctx = context.WithValue(ctx, constant.CTX_WG, wg)
 	queue := job.CreateQueue()
+	ctx = context.WithValue(ctx, constant.CTX_QUEUE, queue)
+	pool := worker.CreatePool(ctx, viper.GetInt("server.workers"))
+	ctx = context.WithValue(ctx, constant.CTX_POOL, pool)
 
 	return &application{
 		ctx:   ctx,
 		log:   l,
-		wg:    &sync.WaitGroup{},
+		wg:    wg,
 		pool:  pool,
 		queue: queue,
 	}
@@ -50,13 +53,11 @@ func Create(c *Config) Application {
 func (a *application) Run() {
 	fmt.Println("Hello World!")
 
-	handler := http.NewServeMux()
-
-	a.ctx, _ = signal.NotifyContext(a.ctx, syscall.SIGINT, syscall.SIGTERM)
+	h := handler.RegisterRoutes()
 
 	srv := http.Server{
 		Addr:        ":8080",
-		Handler:     handler,
+		Handler:     h,
 		BaseContext: a.getBaseCtxFn,
 	}
 
@@ -78,10 +79,5 @@ func (a *application) Run() {
 }
 
 func (a *application) getBaseCtxFn(config net.Listener) context.Context {
-	ctx := a.ctx
-
-	ctx = context.WithValue(ctx, constant.CTX_POOL, a.pool)
-	ctx = context.WithValue(ctx, constant.CTX_QUEUE, a.queue)
-
-	return ctx
+	return a.ctx
 }

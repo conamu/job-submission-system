@@ -7,10 +7,6 @@ import (
 
 func main() {
 	config.Init()
-
-	c := &app.Config{}
-
-	a := app.Create(c)
-
+	a := app.Create()
 	a.Run()
 }

@@ -14,17 +14,17 @@ const (
 )
 
 type Job struct {
-	ctx    context.Context
-	id     string
-	taskFn func(data any)
-	status Status
+	ctx      context.Context
+	Id       string
+	TaskData []byte
+	Status   Status
 }
 
-func CreateJob(ctx context.Context, fn func(data any)) *Job {
+func CreateJob(ctx context.Context, data []byte) *Job {
 	return &Job{
-		ctx:    ctx,
-		id:     uuid.New().String(),
-		taskFn: fn,
-		status: JOB_PENDING,
+		ctx:      ctx,
+		Id:       uuid.New().String(),
+		TaskData: data,
+		Status:   JOB_PENDING,
 	}
 }

@@ -2,7 +2,6 @@ package worker
 
 import (
 	"context"
-	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
 )
 
 type Pool []*Worker
@@ -16,8 +15,4 @@ func CreatePool(ctx context.Context, workerAmount int) Pool {
 	}
 
 	return p
-}
-
-func FromContext(ctx context.Context) Pool {
-	return ctx.Value(constant.CTX_POOL).(Pool)
 }
