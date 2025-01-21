@@ -1,6 +1,6 @@
 package main
 
-import "gitlab.ho-me.zone/conamu/job-submission-system/src/pkg/app"
+import "github.com/conamu/job-submission-system/src/pkg/app"
 
 func main() {
 	c := &app.Config{}
