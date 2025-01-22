@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/job"
 	"io"
@@ -30,6 +31,10 @@ func createJobHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := queue.Place(j)
 	if err != nil {
 		log.With("error", err.Error()).Error("error placing job in queue")
+		if errors.Is(err, job.ErrQueueFull) {
+			w.WriteHeader(http.StatusTooManyRequests)
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -45,6 +50,6 @@ func createJobHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(resData)
 	w.WriteHeader(http.StatusAccepted)
+	w.Write(resData)
 }

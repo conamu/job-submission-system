@@ -2,5 +2,8 @@ server:
   workers: 10
 
 client:
-  instances: 3
+  baseUrl: "http://127.0.0.1:8080/"
+  jobCreateUrl: "job"
+  jobStatusUrl: "status/"
+  instances: 10
   newRequestThreshold: 100ms

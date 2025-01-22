@@ -30,8 +30,8 @@ func (p *stringProcessor) Process(job *Job) error {
 	}
 
 	n := rand.IntN(30)
-	for n < 5 {
-		n *= 2
+	if n < 5 {
+		n = 5
 	}
 
 	job.Status = JOB_PROCESSING
