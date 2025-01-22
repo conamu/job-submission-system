@@ -17,8 +17,7 @@ func SimulateClient(ctx context.Context, client client.Client, wg *sync.WaitGrou
 }
 `
 	l := logger.New(slog.LevelInfo, "client")
-	jobId := ""
-	var err error
+	jobIds := make(map[string]string, 3)
 
 	for {
 		select {
@@ -26,24 +25,37 @@ func SimulateClient(ctx context.Context, client client.Client, wg *sync.WaitGrou
 			wg.Done()
 			return
 		default:
-			jobId, err = client.CreateJob(ctx, simulatedData)
-			if err != nil {
-				l.With("error", err.Error()).Error("error when creating job")
+			for i := 0; i < 3; i++ {
+				jobId, err := client.CreateJob(ctx, simulatedData)
+				if err != nil {
+					l.With("error", err.Error()).Error("error when creating job")
+				}
+				jobIds[jobId] = "CREATED"
 			}
 
-			status := ""
+			allDone := false
 
-			for status != "COMPLETED" {
+			for !allDone {
 				select {
 				case <-ctx.Done():
 					wg.Done()
 					return
 				default:
-					time.Sleep(time.Second)
+					for id, _ := range jobIds {
+						time.Sleep(time.Second)
 
-					status, err = client.GetJobStatus(ctx, jobId)
-					if err != nil {
-						l.With("error", err.Error()).Error("error when creating job")
+						status, err := client.GetJobStatus(ctx, id)
+						if err != nil {
+							l.With("error", err.Error()).Error("error when creating job")
+						}
+						jobIds[id] = status
+						if status == "COMPLETED" {
+							delete(jobIds, id)
+						}
+
+						if len(jobIds) == 0 {
+							allDone = true
+						}
 					}
 				}
 			}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
+	"github.com/spf13/viper"
 	"sync"
 )
 
@@ -17,13 +18,13 @@ var ErrStatusNotFound = errors.New("job status was not found")
 
 func CreateQueue() *Queue {
 	return &Queue{
-		jobQueue:     make(chan *Job, 10),
+		jobQueue:     make(chan *Job, viper.GetInt("server.queueSize")),
 		jobStatusMap: &sync.Map{},
 	}
 }
 
 func (q *Queue) Place(job *Job) (string, error) {
-	if len(q.jobQueue) == 10 {
+	if len(q.jobQueue) == viper.GetInt("server.queueSize") {
 		return "", ErrQueueFull
 	}
 	q.jobStatusMap.Store(job.Id, job)
