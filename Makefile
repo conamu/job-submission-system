@@ -13,3 +13,7 @@ build-clients:
 	go build -o tmp/client-simulator src/cmd/client/main.go
 
 build: build-clients build-server
+
+.PHONY: loadtest
+loadtest:
+	locust -f loadtest/locustfile.py
