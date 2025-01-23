@@ -2,7 +2,7 @@ package logger
 
 import (
 	"context"
-	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"log/slog"
 	"os"
 )
@@ -20,5 +20,5 @@ func New(level slog.Level, app string) *slog.Logger {
 }
 
 func FromContext(ctx context.Context) *slog.Logger {
-	return ctx.Value(constant.CTX_LOGGER).(*slog.Logger)
+	return ctx.Value(constants.CTX_LOGGER).(*slog.Logger)
 }

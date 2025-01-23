@@ -2,22 +2,15 @@ package job
 
 import (
 	"context"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/google/uuid"
-)
-
-type Status string
-
-const (
-	JOB_PENDING    Status = "PENDING"
-	JOB_PROCESSING Status = "PROCESSING"
-	JOB_COMPLETED  Status = "COMPLETED"
 )
 
 type Job struct {
 	ctx      context.Context
 	Id       string
 	TaskData []byte
-	Status   Status
+	Status   constants.Status
 }
 
 func CreateJob(ctx context.Context, data []byte) *Job {
@@ -25,6 +18,6 @@ func CreateJob(ctx context.Context, data []byte) *Job {
 		ctx:      ctx,
 		Id:       uuid.New().String(),
 		TaskData: data,
-		Status:   JOB_PENDING,
+		Status:   constants.JOB_PENDING,
 	}
 }

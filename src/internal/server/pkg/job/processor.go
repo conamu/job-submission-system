@@ -2,6 +2,7 @@ package job
 
 import (
 	"context"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"math/rand/v2"
 	"strconv"
@@ -34,10 +35,10 @@ func (p *stringProcessor) Process(job *Job) error {
 		n = 5
 	}
 
-	job.Status = JOB_PROCESSING
+	job.Status = constants.JOB_PROCESSING
 
 	d, _ := time.ParseDuration(strconv.Itoa(n) + "s")
 	time.Sleep(d)
-	job.Status = JOB_COMPLETED
+	job.Status = constants.JOB_COMPLETED
 	return nil
 }

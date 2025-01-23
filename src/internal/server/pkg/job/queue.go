@@ -3,7 +3,7 @@ package job
 import (
 	"context"
 	"errors"
-	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/spf13/viper"
 	"sync"
 )
@@ -32,7 +32,7 @@ func (q *Queue) Place(job *Job) (string, error) {
 	return job.Id, nil
 }
 
-func (q *Queue) GetStatus(id string) (Status, error) {
+func (q *Queue) GetStatus(id string) (constants.Status, error) {
 	if data, ok := q.jobStatusMap.Load(id); ok {
 		j := data.(*Job)
 		return j.Status, nil
@@ -45,5 +45,5 @@ func (q *Queue) GetJobQueue() chan *Job {
 }
 
 func FromContext(ctx context.Context) *Queue {
-	return ctx.Value(constant.CTX_QUEUE).(*Queue)
+	return ctx.Value(constants.CTX_QUEUE).(*Queue)
 }

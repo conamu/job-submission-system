@@ -29,8 +29,8 @@ func Create() Application {
 func (a *application) Run() {
 	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt)
 
-	simulatedWorkers := viper.GetInt("client.instances")
-	for i := 0; i < simulatedWorkers; i++ {
+	simulatedClients := viper.GetInt("client.instances")
+	for i := 0; i < simulatedClients; i++ {
 		fmt.Println("started a simulated client")
 		go simulation.SimulateClient(ctx, a.client, a.wg)
 	}

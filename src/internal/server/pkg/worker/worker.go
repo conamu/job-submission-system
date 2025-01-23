@@ -2,8 +2,8 @@ package worker
 
 import (
 	"context"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
-	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/job"
 	"log/slog"
 	"sync"
@@ -21,7 +21,7 @@ func Create(ctx context.Context) *Worker {
 
 	l := logger.FromContext(ctx)
 	l = l.With("type", "worker")
-	wg := ctx.Value(constant.CTX_WG).(*sync.WaitGroup)
+	wg := ctx.Value(constants.CTX_WG).(*sync.WaitGroup)
 	queue := job.FromContext(ctx)
 
 	w := &Worker{

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
-	"github.com/conamu/job-submission-system/src/internal/server/pkg/constant"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/handler"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/job"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/worker"
@@ -33,13 +33,13 @@ func Create() Application {
 	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 
 	l := logger.New(slog.LevelDebug, "JobServer")
-	ctx = context.WithValue(ctx, constant.CTX_LOGGER, l)
+	ctx = context.WithValue(ctx, constants.CTX_LOGGER, l)
 	wg := &sync.WaitGroup{}
-	ctx = context.WithValue(ctx, constant.CTX_WG, wg)
+	ctx = context.WithValue(ctx, constants.CTX_WG, wg)
 	queue := job.CreateQueue()
-	ctx = context.WithValue(ctx, constant.CTX_QUEUE, queue)
+	ctx = context.WithValue(ctx, constants.CTX_QUEUE, queue)
 	pool := worker.CreatePool(ctx, viper.GetInt("server.workers"))
-	ctx = context.WithValue(ctx, constant.CTX_POOL, pool)
+	ctx = context.WithValue(ctx, constants.CTX_POOL, pool)
 
 	return &application{
 		ctx:   ctx,

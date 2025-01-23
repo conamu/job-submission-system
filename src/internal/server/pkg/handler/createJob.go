@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/job"
 	"io"
@@ -10,8 +11,8 @@ import (
 )
 
 type JobResponse struct {
-	Id     string     `json:"id"`
-	Status job.Status `json:"status,omitempty"`
+	Id     string           `json:"id"`
+	Status constants.Status `json:"status,omitempty"`
 }
 
 func createJobHandler(w http.ResponseWriter, r *http.Request) {

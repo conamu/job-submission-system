@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"io"
@@ -103,7 +104,7 @@ func (c *client) GetJobStatus(ctx context.Context, id string) (string, error) {
 	}
 
 	if res.StatusCode == http.StatusProcessing {
-		return "PROCESSING", nil
+		return string(constants.JOB_PROCESSING), nil
 	}
 
 	if res.StatusCode != http.StatusOK {

@@ -3,6 +3,7 @@ package simulation
 import (
 	"context"
 	"github.com/conamu/job-submission-system/src/internal/client/pkg/client"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"log/slog"
 	"sync"
@@ -30,7 +31,7 @@ func SimulateClient(ctx context.Context, client client.Client, wg *sync.WaitGrou
 				if err != nil {
 					l.With("error", err.Error()).Error("error when creating job")
 				}
-				jobIds[jobId] = "CREATED"
+				jobIds[jobId] = string(constants.JOB_PENDING)
 			}
 
 			allDone := false
@@ -49,7 +50,7 @@ func SimulateClient(ctx context.Context, client client.Client, wg *sync.WaitGrou
 							l.With("error", err.Error()).Error("error when creating job")
 						}
 						jobIds[id] = status
-						if status == "COMPLETED" {
+						if status == string(constants.JOB_COMPLETED) {
 							delete(jobIds, id)
 						}
 
