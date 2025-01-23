@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/handler"
@@ -51,10 +50,7 @@ func Create() Application {
 }
 
 func (a *application) Run() {
-	fmt.Println("Hello World!")
-
 	h := handler.RegisterRoutes()
-
 	srv := http.Server{
 		Addr:        ":8080",
 		Handler:     h,
