@@ -13,7 +13,7 @@ import (
 )
 
 type Client interface {
-	CreateJob(ctx context.Context, data string) (string, error)
+	CreateJob(ctx context.Context, data []byte) (string, error)
 	GetJobStatus(ctx context.Context, id string) (string, error)
 }
 type client struct {
@@ -50,9 +50,9 @@ func NewClient() Client {
 
 var ErrRateLimited = errors.New("rate limit reached or queue full")
 
-func (c *client) CreateJob(ctx context.Context, input string) (string, error) {
+func (c *client) CreateJob(ctx context.Context, inputData []byte) (string, error) {
 	u := c.jobCreateUrl.String()
-	body := bytes.NewReader([]byte(input))
+	body := bytes.NewReader(inputData)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u, body)
 	if err != nil {
@@ -103,7 +103,7 @@ func (c *client) GetJobStatus(ctx context.Context, id string) (string, error) {
 		return "", ErrRateLimited
 	}
 
-	if res.StatusCode == http.StatusProcessing {
+	if res.StatusCode == http.StatusTooEarly {
 		return string(constants.JOB_PROCESSING), nil
 	}
 

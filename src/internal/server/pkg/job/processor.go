@@ -26,9 +26,7 @@ func NewStringProcessor(ctx context.Context) Processor {
 func (p *stringProcessor) Process(job *Job) error {
 	l := logger.FromContext(p.ctx)
 
-	if job.TaskData != nil {
-		l.With("data", string(job.TaskData)).Info("processing job")
-	}
+	l.With("data", job.TaskData).Info("processing job")
 
 	n := rand.IntN(30)
 	if n < 5 {

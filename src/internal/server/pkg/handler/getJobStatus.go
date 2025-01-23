@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
 	"github.com/conamu/job-submission-system/src/internal/server/pkg/job"
 	"net/http"
@@ -34,5 +35,9 @@ func jobStatusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	if jobStatus == constants.JOB_PROCESSING || jobStatus == constants.JOB_PENDING {
+		w.WriteHeader(http.StatusTooEarly)
+	}
 	w.Write(resData)
 }

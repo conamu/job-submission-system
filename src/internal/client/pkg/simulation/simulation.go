@@ -2,9 +2,11 @@ package simulation
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/conamu/job-submission-system/src/internal/client/pkg/client"
 	"github.com/conamu/job-submission-system/src/internal/pkg/constants"
 	"github.com/conamu/job-submission-system/src/internal/pkg/logger"
+	"github.com/conamu/job-submission-system/src/internal/pkg/schemas"
 	"log/slog"
 	"sync"
 	"time"
@@ -12,13 +14,16 @@ import (
 
 func SimulateClient(ctx context.Context, client client.Client, wg *sync.WaitGroup) {
 	wg.Add(1)
-	simulatedData := `
-{
-    "payload": "some cool payload"
-}
-`
+	simulatedData := &schemas.CreateJobRequest{
+		Payload: "some cool payload",
+	}
+
 	l := logger.New(slog.LevelInfo, "client")
 	jobIds := make(map[string]string, 3)
+	data, err := json.Marshal(simulatedData)
+	if err != nil {
+		panic(err)
+	}
 
 	for {
 		select {
@@ -27,7 +32,7 @@ func SimulateClient(ctx context.Context, client client.Client, wg *sync.WaitGrou
 			return
 		default:
 			for i := 0; i < 3; i++ {
-				jobId, err := client.CreateJob(ctx, simulatedData)
+				jobId, err := client.CreateJob(ctx, data)
 				if err != nil {
 					l.With("error", err.Error()).Error("error when creating job")
 				}

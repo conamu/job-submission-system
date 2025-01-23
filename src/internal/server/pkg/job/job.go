@@ -9,11 +9,11 @@ import (
 type Job struct {
 	ctx      context.Context
 	Id       string
-	TaskData []byte
+	TaskData string
 	Status   constants.Status
 }
 
-func CreateJob(ctx context.Context, data []byte) *Job {
+func CreateJob(ctx context.Context, data string) *Job {
 	return &Job{
 		ctx:      ctx,
 		Id:       uuid.New().String(),
