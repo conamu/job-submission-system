@@ -44,6 +44,10 @@ func (q *Queue) GetJobQueue() chan *Job {
 	return q.jobQueue
 }
 
+func (q *Queue) GetJobStatuses() *sync.Map {
+	return q.jobStatusMap
+}
+
 func FromContext(ctx context.Context) *Queue {
 	return ctx.Value(constants.CTX_QUEUE).(*Queue)
 }
